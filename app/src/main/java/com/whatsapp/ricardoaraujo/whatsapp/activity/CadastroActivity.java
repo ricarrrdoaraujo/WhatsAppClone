@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.whatsapp.ricardoaraujo.whatsapp.R;
 import com.whatsapp.ricardoaraujo.whatsapp.config.ConfiguracaoFirebase;
+import com.whatsapp.ricardoaraujo.whatsapp.helper.Base64Custom;
 import com.whatsapp.ricardoaraujo.whatsapp.model.Usuario;
 
 public class CadastroActivity extends AppCompatActivity {
@@ -34,7 +35,7 @@ public class CadastroActivity extends AppCompatActivity {
         campoSenha = findViewById(R.id.editSenha);
     }
 
-    public void cadastrarUsuario(Usuario usuario){
+    public void cadastrarUsuario(final Usuario usuario){
 
         auth = ConfiguracaoFirebase.getFirebaseAuth();
         auth.createUserWithEmailAndPassword(
@@ -50,6 +51,16 @@ public class CadastroActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT)
                             .show();
                     finish();
+
+                    try{
+
+                        String identificadorUsuario = Base64Custom.codificarBase64(usuario.getEmail());
+                        usuario.setId(identificadorUsuario);
+                        usuario.salvar();
+
+                    } catch(Exception e){
+                        e.printStackTrace();
+                    }
 
                 }else {
                     String excecao = "";
