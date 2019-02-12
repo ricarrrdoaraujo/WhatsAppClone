@@ -2,17 +2,34 @@ package com.whatsapp.ricardoaraujo.whatsapp.activity;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.whatsapp.ricardoaraujo.whatsapp.R;
 import com.whatsapp.ricardoaraujo.whatsapp.helper.Permissao;
 
+import java.net.URI;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ConfiguracoesActivity extends AppCompatActivity {
+
+    private ImageButton imageButtomGallery;
+    private ImageButton imageButtonCamera;
+    private static final int SELECAO_CAMERA = 100;
+    private static final int SELECAO_GALERIA = 200;
+    private CircleImageView imagePerfil;
 
     private String[] permissoesNecessarias = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -33,6 +50,66 @@ public class ConfiguracoesActivity extends AppCompatActivity {
 
         //botao voltar com apenas uma linha de código :)
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        imageButtomGallery = findViewById(R.id.imageButtonGallery);
+        imageButtonCamera = findViewById(R.id.imageButtonCamera);
+        imagePerfil = findViewById(R.id.profile_image);
+
+        imageButtonCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                // resolveActivity testa se foi possivel resolver a activity
+                if(i.resolveActivity(getPackageManager()) != null ){
+                    startActivityForResult(i, SELECAO_CAMERA);
+                }
+
+            }
+        });
+
+        imageButtomGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Caminho padrão de armazenar fotos: MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                //resolveActivity verifica se existe a galeria de fotod
+                if(i.resolveActivity(getPackageManager()) != null ){
+                    startActivityForResult(i, SELECAO_GALERIA);
+                }
+
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK){
+            Bitmap imagem = null;
+
+            try{
+                switch (requestCode){
+                    case SELECAO_CAMERA:
+                        imagem = (Bitmap) data.getExtras().get("data");
+                        break;
+
+                    case SELECAO_GALERIA:
+                        Uri localImagemSelecionada = data.getData();
+                        imagem = MediaStore.Images.Media.getBitmap(getContentResolver(),localImagemSelecionada);
+                        break;
+                }
+
+                if(imagem != null){
+                    imagePerfil.setImageBitmap(imagem);
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -45,7 +122,6 @@ public class ConfiguracoesActivity extends AppCompatActivity {
                 alertaValidacaoPermissao();
             }
         }
-
     }
 
     private void alertaValidacaoPermissao(){
