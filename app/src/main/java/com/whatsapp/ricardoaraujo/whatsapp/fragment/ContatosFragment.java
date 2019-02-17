@@ -74,7 +74,11 @@ public class ContatosFragment extends Fragment {
                             @Override
                             public void onItemClick(View view, int position) {
 
+                                Usuario usuarioSelecionado = listaContatos.get(position);
                                 Intent i = new Intent(getActivity(), ChatActivity.class);
+                                //putExtra envia os dados para outra activity
+                                //como se fosse uma props
+                                i.putExtra("chatContato", usuarioSelecionado);
                                 startActivity(i);
 
                             }
