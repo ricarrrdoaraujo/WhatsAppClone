@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/private/var/folders/ds/ftmb22zn7yb8jv_zcwvsl57m0000gn/T/AppTranslocation/A85F2B2C-2E78-4AC1-B4F3-528CE2284FA9/d/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/image/ic_image_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/content/ic_send_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -33,9 +33,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="5d5e5d" />
-                            <entry key="outputName" value="ic_image_black_24dp" />
-                            <entry key="sourceFile" value="$APPLICATION_HOME_DIR$/bin/C:\Users\ricar" />
+                            <entry key="color" value="ffffff" />
+                            <entry key="outputName" value="ic_send_white_24dp" />
+                            <entry key="sourceFile" value="C:\Program Files\Android\Android Studio\bin\C:\Users\ricar" />
                           </map>
                         </option>
                       </PersistentState>

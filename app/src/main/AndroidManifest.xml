@@ -4,10 +4,10 @@
 
     <uses-feature
         android:name="android.hardware.camera2"
-        android:required="true"
-        />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -27,12 +27,22 @@
         <activity android:name=".activity.CadastroActivity" />
         <activity
             android:name=".activity.ConfiguracoesActivity"
-            android:parentActivityName=".activity.MainActivity"
-            >
-            <!--  parentActivityName define que a MainActivity é pai
-               da ConfiguracoesActivity, necessário para o botao voltar funcionar
-               -->
+            android:parentActivityName=".activity.MainActivity">
 
+            <!--
+               parentActivityName define que a MainActivity é pai
+               da ConfiguracoesActivity, necessário para o botao voltar funcionar
+            -->
+
+        </activity>
+        <activity
+            android:name=".activity.ChatActivity"
+            android:label="@string/title_activity_chat"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.whatsapp.ricardoaraujo.whatsapp.activity.MainActivity" />
         </activity>
     </application>
 
