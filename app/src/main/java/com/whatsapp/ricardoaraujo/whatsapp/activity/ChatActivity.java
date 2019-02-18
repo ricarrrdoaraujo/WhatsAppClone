@@ -14,6 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.whatsapp.ricardoaraujo.whatsapp.R;
 import com.whatsapp.ricardoaraujo.whatsapp.adapter.MensagensAdapter;
@@ -34,6 +38,9 @@ public class ChatActivity extends AppCompatActivity {
     private CircleImageView circleImageViewFoto;
     private EditText editMensagem;
     private Usuario usuarioDestinatario;
+    private DatabaseReference database;
+    private DatabaseReference mensagensRef;
+    private ChildEventListener childEventListenerMensagens;
 
     //Identificador usuarios remetente e destinatario
     private String idUsuarioRemetente;
@@ -93,6 +100,11 @@ public class ChatActivity extends AppCompatActivity {
         recyclerMensagens.setHasFixedSize(true);
         recyclerMensagens.setAdapter(adapter);
 
+        database = ConfiguracaoFirebase.getFirebaseDatabase();
+        mensagensRef = database.child("mensagem")
+                .child(idUsuarioRemetente)
+                .child(idUsuarioDestinatario);
+
     }
 
     public void enviarMensagem(View view){
@@ -107,6 +119,9 @@ public class ChatActivity extends AppCompatActivity {
             //salvar mensagem para o remetente
             salvarMensagem(idUsuarioRemetente, idUsuarioDestinatario, mensagem);
 
+            //salvar mensagem para o destinatario
+            salvarMensagem(idUsuarioDestinatario, idUsuarioRemetente, mensagem);
+
         } else {
             Toast.makeText(ChatActivity.this,
                     "Digite uma mensagem para enviar!",
@@ -114,17 +129,62 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void salvarMensagem(String idRemetente, String idDestinatario, Mensagem mensagem){
+    private void salvarMensagem(String idRemetente, String idDestinatario, Mensagem msg){
 
         DatabaseReference database = ConfiguracaoFirebase.getFirebaseDatabase();
-        DatabaseReference mensagemRef = database.child("mensagens");
-
-        mensagemRef.child(idRemetente)
+        mensagensRef = database.child("mensagem");
+        mensagensRef.child(idRemetente)
                 .child(idDestinatario)
                 .push()
-                .setValue(mensagem);
+                .setValue(msg);
+
         //Limpar texto
         editMensagem.setText("");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        recuperarMensagens();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mensagensRef.removeEventListener(childEventListenerMensagens);
+    }
+
+    private void recuperarMensagens(){
+
+        childEventListenerMensagens = mensagensRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Mensagem mensagem = dataSnapshot.getValue(Mensagem.class);
+                mensagens.add(mensagem);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 }
